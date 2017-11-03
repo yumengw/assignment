@@ -24,12 +24,16 @@ python coverage.py -1 forward.fastq -2 reverse.fastq -x ref.fasta -q 0 -o outdir
 ### Outputs
 ```
 All output will be written into the outdir folder. The default name is "out".
+
 Inside the folder, you will find:
+
 1. coverage.tsv: A tab-delimited file with columns “position” (in the reference sequence)
 and “count”. Count is defined as the number of mapped reads that contain the given
 reference position in their mapping.
+
 2. coverage.pdf: A plot showing the coverage, with reference position on the x-axis and
 count on the y-axis.
+
 3. correlation.html: A short report including tables, plots, or descriptions of statistically 
 significant correlation was observed between the nucleotide content of the
 reference and the coverage.
