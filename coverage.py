@@ -72,8 +72,8 @@ if __name__ == "__main__":
 
     try:
         ######### mkdir outfolder #########
-        if not os.path.isdir(options.outdir + 'p' + str(options.mean_quality_score)):
-            os.makedirs(options.outdir+ 'p' + str(options.mean_quality_score))
+        if not os.path.isdir(options.outdir):
+            os.makedirs(options.outdir)
 
         working_dir = os.getcwd()
 
