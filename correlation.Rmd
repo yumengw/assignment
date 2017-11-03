@@ -1,0 +1,47 @@
+---
+title: <center> <span style="color:blue; font-size:1.4em;"> Correlation Between Coverage and Sequence Content </span> </center>
+author: <center> <span style="font-family:Arial;"> Yumeng Wang, Baylor College of Medicine, Houston, TX </span> </center>
+date: <center>`r format(Sys.time(), "%B %d, %Y")`</center>
+output: html_document
+---
+
+**Sample Name: MiSeq 2x250bp Illumina run of the 5 HIV-1 virus mix**
+
+**Sample From: SRA SRR961514**
+
+**************************************************
+
+```{r, "load", echo = FALSE, warning = FALSE}
+suppressPackageStartupMessages(library(googleVis))
+suppressPackageStartupMessages(library(stringr))
+suppressPackageStartupMessages(library(DT))
+suppressPackageStartupMessages(library(RColorBrewer))
+```
+
+## 1  table
+<center>
+```{r, results='asis', echo = FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+library(kableExtra)
+html_table_width <- function(kable_output, width){
+  width_html <- paste0(paste0('<col width="', width, '">'), collapse = "\n")
+  sub("<table>", paste0("<table>\n", width_html), kable_output)
+}
+data <- read.table("/Users/yumengw/Documents/Job_hunting/Brown_univ_genomics_data_scientist/assignment/out/coverage_nt.tsv", header=T, sep="\t", stringsAsFactors = F, check.names = F)
+options(knitr.table.format = "html") 
+kable(data, "html", booktabs=T)%>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+```
+</center>
+
+<center>
+```{r fig.width=4, fig.height=5, echo=FALSE}
+library(png)
+library(grid)
+img <- readPNG("/Users/yumengw/Documents/Job_hunting/Brown_univ_genomics_data_scientist/assignment/out/ave_cov.png")
+ grid.raster(img)
+```
+</center>
+
+

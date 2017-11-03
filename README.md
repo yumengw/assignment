@@ -38,3 +38,6 @@ count on the y-axis.
 significant correlation was observed between the nucleotide content of the
 reference and the coverage.
 ```
+
+### References
+Benjamini, Yuval, and Terence P. Speed. "Summarizing and correcting the GC content bias in high-throughput sequencing." Nucleic acids research 40.10 (2012): e72-e72.
