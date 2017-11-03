@@ -29,7 +29,7 @@ html_table_width <- function(kable_output, width){
   width_html <- paste0(paste0('<col width="', width, '">'), collapse = "\n")
   sub("<table>", paste0("<table>\n", width_html), kable_output)
 }
-data <- read.table("/Users/yumengw/Documents/Job_hunting/Brown_univ_genomics_data_scientist/assignment/out/assignment/out_p0/coverage_nt.tsv", header=T, sep="\t", stringsAsFactors = F, check.names = F)
+data <- read.table(nt_count, header=T, sep="\t", stringsAsFactors = F, check.names = F)
 options(knitr.table.format = "html") 
 kable(data, "html", booktabs=T)%>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
@@ -40,7 +40,7 @@ kable(data, "html", booktabs=T)%>%
 ```{r fig.width=4, fig.height=5, echo=FALSE}
 library(png)
 library(grid)
-img <- readPNG("/Users/yumengw/Documents/Job_hunting/Brown_univ_genomics_data_scientist/assignment/out/assignment/out_p0/avg_cov.png")
+img <- readPNG(nt_png)
  grid.raster(img)
 ```
 </center>
