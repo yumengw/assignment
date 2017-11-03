@@ -106,9 +106,11 @@ if __name__ == "__main__":
         os.system('''Rscript ../plot_coverage.R align.filtered.sort.bam.depth''')
 
         ######### 3. calculate correlation between coverage and seq content#########
-        os.system('''samtools mpielup -Bf {0} -aa align.filtered.sort.bam > align.filtered.sort.bam.mpileup'''.format(options.reference_fasta))
+        os.system('''samtools mpileup -Bf {0} -aa align.filtered.sort.bam > align.filtered.sort.bam.mpileup'''.format(options.reference_fasta))
         os.system('''Rscript ../calc_correlation.R align.filtered.sort.bam.depth align.filtered.sort.bam.mpileup''')
-        os.system('''Rscript -e "rmarkdown::render('correlation.Rmd')"''')
+        os.system('''Rscript -e "rmarkdown::render('correlation.Rmd', 
+								 params=list(nt_count={0}, nt_png={1}))"
+				  '''.format(options.outdir+os.sep()+'coverage_nt.tsv', options.outdir+os.sep()+'avg_cov.png'))
     except MemoryError as err:
         sys.exit('memory exceeded')
 
