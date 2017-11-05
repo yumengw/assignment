@@ -72,9 +72,6 @@ if __name__ == "__main__":
     ##################
 
     try:
-        os.chdir(options.outdir)
-        os.system('''Rscript ../GCcorrect.R {0} {1} {2} {3}'''.format(options.reference_fasta, options.reference_fasta+'.masked.forGC', 'fwd.cln', 'rev.cln'))
-        exit()
         ######### mkdir outfolder #########
         if not os.path.isdir(options.outdir):
             os.makedirs(options.outdir)
@@ -83,7 +80,7 @@ if __name__ == "__main__":
 
         ######### alignment #########
         ## generate index file
-        os.system('''module load bowtie2/2.2.3''')
+        #os.system('''module load bowtie2/2.2.3''')
         index_foler = os.path.dirname(os.path.abspath(options.reference_fasta))
         os.chdir(index_foler)
         os.system('''
@@ -101,7 +98,7 @@ if __name__ == "__main__":
 
         ######### calculate coverage #########
         os.chdir(options.outdir)
-        os.system('''module load samtools/1.4''')
+        #os.system('''module load samtools/1.4''')
         os.system('''samtools view -bS align.filtered.sam -o align.filtered.bam''')
         os.system('''samtools sort -o align.filtered.sort.bam align.filtered.bam''')
         os.system('''samtools depth -aa -d 1000000 align.filtered.sort.bam > align.filtered.sort.bam.depth''')
@@ -111,7 +108,7 @@ if __name__ == "__main__":
         os.system('''samtools view -b -f 16 align.filtered.sort.bam | samtools depth -aa -d 1000000 - > rev.filtered.sort.bam.depth''')
 
         ## generate coverage table and coverage plot
-        os.system('''module load R/3.4.1-shlib''')
+        #os.system('''module load R/3.4.1-shlib''')
         os.system('''Rscript ../plot_coverage.R align.filtered.sort.bam.depth''')
 
         ######### calculate correlation between coverage and seq content#########
