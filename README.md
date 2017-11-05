@@ -18,7 +18,7 @@ python coverage.py -1 forward.fastq -2 reverse.fastq -x ref.fasta -q 0 -o outdir
 ```
 -1  forward fastq 
 -2  reverse fastq 
--x  Reference genome fasta
+-x  Reference genome fasta (MUST be full path, not relative path)
 -q  Mean base quality (range 0-41)
 -o  output dir name
 ```
