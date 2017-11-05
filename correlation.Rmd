@@ -114,7 +114,9 @@ b. Sequence mappability and GC effect
 
 **************************************************
 
-c. GC lens
+c. TV scores for GC windows of different lengths
+
+Total Variation distance (TV score): The above (TV) score is a weighted L1 distance from the global mean, divided by forumla (so it will be between 0 and 1). In other words, it is the total variation distance between the empirical distribution for a single fragment (under specific GC categories) and a uniform distribution. Thus, it measures the proportion of fragments influenced by the stratification, and is comparable across data sets. We look for high TV, meaning counts are strongly dependent on GC under a particular stratification [Benjamini et al].
 
 <center>
 <img src="plotGCLens.pdf" alt="some text"  width="420" height="420">
@@ -137,3 +139,10 @@ e. GC content correlation with TV score in the reverse strand
 <center>
 <img src="plotCondMean_1.pdf" alt="some text"  width="420" height="420">
 </center>
+
+**************************************************
+## 3.  Conclusion:
+
+1. Sequence coverage have no correlation with single nucleotide content.
+
+2. GC content has profound influence on reads coverage. The GC effect for human genomes is largely unimodal. In AT-rich regions, coverage increases with increasing GC. In GC-rich regions, coverage decreases with increasing GC. The peak coverage can be different for different data sets (and bin sizes), but is usually located between 0.4 to 0.55 GC [Benjamini et al].
