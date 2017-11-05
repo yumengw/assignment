@@ -6,6 +6,7 @@ import sys
 import os
 from subprocess import Popen, PIPE
 from optparse import OptionParser
+from shutil import copyfile
 
 parser = OptionParser()
 parser.add_option("-1", "--1", dest="forward_reads",
@@ -71,13 +72,16 @@ if __name__ == "__main__":
     ##################
 
     try:
+        os.chdir(options.outdir)
+        os.system('''Rscript ../GCcorrect.R {0} {1} {2} {3}'''.format(options.reference_fasta, options.reference_fasta+'.masked.forGC', 'fwd.cln', 'rev.cln'))
+        exit()
         ######### mkdir outfolder #########
         if not os.path.isdir(options.outdir):
             os.makedirs(options.outdir)
 
         working_dir = os.getcwd()
 
-        ######### 1. alignment #########
+        ######### alignment #########
         ## generate index file
         os.system('''module load bowtie2/2.2.3''')
         index_foler = os.path.dirname(os.path.abspath(options.reference_fasta))
@@ -91,7 +95,7 @@ if __name__ == "__main__":
             bowtie2 -p 1 -N 0 -x {0} -1 {1} -2 {2} -S {3}
             '''.format(index_foler+os.sep+'HIV', options.forward_reads, options.reverse_reads, options.outdir+os.sep+'align.sam'))
 
-        ######### 2. filter low quality alignment #########
+        ######### filter low quality alignment #########
         filter_low_quality_alignment(options.outdir+os.sep+'align.sam', 
                                      options.mean_quality_score)
 
@@ -101,18 +105,35 @@ if __name__ == "__main__":
         os.system('''samtools view -bS align.filtered.sam -o align.filtered.bam''')
         os.system('''samtools sort -o align.filtered.sort.bam align.filtered.bam''')
         os.system('''samtools depth -aa -d 1000000 align.filtered.sort.bam > align.filtered.sort.bam.depth''')
+
+        os.system('''samtools view -b -F 16 align.filtered.sort.bam | samtools depth -aa -d 1000000 - > fwd.filtered.sort.bam.depth''')
+
+        os.system('''samtools view -b -f 16 align.filtered.sort.bam | samtools depth -aa -d 1000000 - > rev.filtered.sort.bam.depth''')
+
         ## generate coverage table and coverage plot
         os.system('''module load R/3.4.1-shlib''')
         os.system('''Rscript ../plot_coverage.R align.filtered.sort.bam.depth''')
 
-        ######### 3. calculate correlation between coverage and seq content#########
+        ######### calculate correlation between coverage and seq content#########
         os.system('''samtools mpileup -Bf {0} -aa align.filtered.sort.bam > align.filtered.sort.bam.mpileup'''.format(options.reference_fasta))
         os.system('''Rscript ../calc_correlation.R align.filtered.sort.bam.depth align.filtered.sort.bam.mpileup''')
-        os.system('''Rscript -e "rmarkdown::render('correlation.Rmd', 
-								 params=list(nt_count={0}, nt_png={1}))"
-				  '''.format(options.outdir+os.sep()+'coverage_nt.tsv', options.outdir+os.sep()+'avg_cov.png'))
+        os.system('''Rscript ../calc_correlation.R fwd.filtered.sort.bam.depth align.filtered.sort.bam.mpileup''')
+        os.system('''Rscript ../calc_correlation.R rev.filtered.sort.bam.depth align.filtered.sort.bam.mpileup''')
+
+        ######### GC content #########
+        os.system('''samtools view -b -F 16 align.filtered.sort.bam | samtools view -F 4 - | cut -f3,4,9 > fwd.cln''')
+        os.system('''samtools view -b -f 16 align.filtered.sort.bam | samtools view -F 4 - | cut -f3,4,9 > rev.cln''')
+        os.system('''Rscript ../GCcorrect.R {0} {1} {2} {3}'''.format(options.reference_fasta, options.reference_fasta+'.masked.forGC', 'fwd.cln', 'rev.cln'))
+        copyfile('../correlation.Rmd', 'correlation.Rmd')
+        os.system('''Rscript -e "rmarkdown::render('correlation.Rmd')"''')
+
+        ######### clean up #########
+        all_files = os.listdir('.')
+        keep_files = ['coverage.tsv', 'coverage.pdf', 'correlation.html']
+        for item in all_files:
+            if item not in keep_files: os.remove(item)
+
     except MemoryError as err:
         sys.exit('memory exceeded')
 
     print("--- %s seconds ---" % (time.time() - start_time))
-    

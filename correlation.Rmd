@@ -18,8 +18,36 @@ suppressPackageStartupMessages(library(DT))
 suppressPackageStartupMessages(library(RColorBrewer))
 ```
 
-## 1  Nucleotide average coverage summray
+## 1.  Nucleotide average coverage summary
+
+a. Average coverage of each nucleotide for all reads.
+
 <center>
+
+```{r, results='asis', echo = FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+library(kableExtra)
+html_table_width <- function(kable_output, width){
+  width_html <- paste0(paste0('<col width="', width, '">'), collapse = "\n")
+  sub("<table>", paste0("<table>\n", width_html), kable_output)
+}
+data <- read.table("align_coverage_nt.tsv", header=T, sep="\t", stringsAsFactors = F, check.names = F)
+options(knitr.table.format = "html") 
+kable(data, "html", booktabs=T)%>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
+```
+</center>
+
+<center>
+<img src="align_avg_coverage.pdf" alt="some text"  width="420" height="420">
+</center>
+
+**************************************************
+
+b. Average coverage of each nucleotide for forward reads.
+<center>
+
 ```{r, results='asis', echo = FALSE, message=FALSE}
 library(knitr)
 library(dplyr)
@@ -29,7 +57,7 @@ html_table_width <- function(kable_output, width){
   width_html <- paste0(paste0('<col width="', width, '">'), collapse = "\n")
   sub("<table>", paste0("<table>\n", width_html), kable_output)
 }
-data <- read.table(nt_count, header=T, sep="\t", stringsAsFactors = F, check.names = F)
+data <- read.table("fwd_coverage_nt.tsv", header=T, sep="\t", stringsAsFactors = F, check.names = F)
 options(knitr.table.format = "html") 
 kable(data, "html", booktabs=T)%>%
   kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
@@ -37,12 +65,75 @@ kable(data, "html", booktabs=T)%>%
 </center>
 
 <center>
-```{r fig.width=4, fig.height=5, echo=FALSE}
-library(png)
-library(grid)
-img <- readPNG(nt_png)
- grid.raster(img)
+<img src="fwd_avg_coverage.pdf" alt="some text"  width="420" height="420">
+</center>
+
+**************************************************
+
+c. Average coverage of each nucleotide for reverse reads.
+
+<center>
+
+```{r, results='asis', echo = FALSE, message=FALSE}
+library(knitr)
+library(dplyr)
+library(kableExtra)
+args <- commandArgs(trailingOnly = TRUE)
+html_table_width <- function(kable_output, width){
+  width_html <- paste0(paste0('<col width="', width, '">'), collapse = "\n")
+  sub("<table>", paste0("<table>\n", width_html), kable_output)
+}
+data <- read.table("rev_coverage_nt.tsv", header=T, sep="\t", stringsAsFactors = F, check.names = F)
+options(knitr.table.format = "html") 
+kable(data, "html", booktabs=T)%>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F)
 ```
 </center>
 
+<center>
+<img src="rev_avg_coverage.pdf" alt="some text"  width="420" height="420">
+</center>
 
+**************************************************
+
+## 2.  GC content correlation with sequencing coverage
+
+a. Overview of reads binning
+
+<center>
+<img src="basicPlots.pdf" alt="some text"  width="4200" height="4200">
+</center>
+
+**************************************************
+
+b. Sequence mappability and GC effect
+
+<center>
+<img src="compDataRefPlots.pdf" alt="some text"  width="4200" height="4200">
+</center>
+
+**************************************************
+
+c. GC lens
+
+<center>
+<img src="plotGCLens.pdf" alt="some text"  width="420" height="420">
+</center>
+
+
+**************************************************
+
+d. GC content correlation with TV score in the forward strand
+
+<center>
+<img src="plotCondMean_0.pdf" alt="some text"  width="420" height="420">
+</center>
+
+
+**************************************************
+
+e. GC content correlation with TV score in the reverse strand
+
+<center>
+<img src="plotCondMean_1.pdf" alt="some text"  width="420" height="420">
+</center>
